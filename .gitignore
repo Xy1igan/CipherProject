@@ -1,0 +1,12 @@
+# Project exclude paths
+/out/
+/src/com/javarush/task/jdk13/task53/task5303/
+/src/com/javarush/task/jdk13/task53/task5302/
+/src/com/javarush/task/jdk13/task53/task5301/
+/src/com/javarush/task/task01/
+/src/com/javarush/task/pro/
+/data.txt
+/hs_err_pid8736.log
+/javarush-project.iml
+/output.txt
+/result.txt
