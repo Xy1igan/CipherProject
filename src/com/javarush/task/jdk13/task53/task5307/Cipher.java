@@ -6,20 +6,23 @@ import java.io.IOException;
 
 public class Cipher {
     private Alphabet alphabet = Alphabet.getInstance();
-    private static int shift;
+    private static int shift = Integer.MIN_VALUE;
+    private static String key = null;
+    private static FileManager fm = new FileManager();
 
-//    public String encrypt(String message, String key) {
-//        char[] resultChar = new char[message.length()];     //результирующий массив
-//        char[] arrayMessage = message.toCharArray();        //массив символов из сообщения
-//
-//        for (int i = 0; i < arrayMessage.length; i++) {           //процесс кодирования
-//            resultChar[i] = encrypt(arrayMessage[i], key);
-//        }
-//        return String.copyValueOf(resultChar);
-//    }
+    public String encrypt(String message, String newKey) {
+        setKey(newKey);
+        char[] resultChar = new char[message.length()];     //результирующий массив
+        char[] arrayMessage = message.toCharArray();        //массив символов из сообщения
 
-    public Character encrypt(Character symbol, String key) {    // кодирование посимвольно
-        setShift(key);
+        for (int i = 0; i < arrayMessage.length; i++) {           //процесс кодирования
+            resultChar[i] = encrypt(arrayMessage[i], key);
+        }
+        return String.copyValueOf(resultChar);
+    }
+
+    public Character encrypt(Character symbol, String newKey) {    // кодирование посимвольно
+        setKey(newKey);
         if (alphabet.containsChar(symbol)) {
             int index = (alphabet.getIndexOfChar(symbol) + shift) % Alphabet.length;
             return alphabet.getCharOfIndex(index);
@@ -28,11 +31,10 @@ public class Cipher {
         }
     }
 
-    public void encryptFile(String key, String src, String dst) throws IOException {
-        FileManager fm = new FileManager();
-        BufferedReader bufferedReader = fm.readFileToBuffer(src);
-        BufferedWriter bufferedWriter = fm.writeBufferToFile(dst);
-        try {
+    public void encryptFile(String newKey, String src, String dst) throws IOException {
+        setKey(newKey);
+        try (BufferedReader bufferedReader = fm.readFileToBuffer(src);
+             BufferedWriter bufferedWriter = fm.writeBufferToFile(dst);) {
             while (bufferedReader.ready()) {
                 char inputChar = (char) bufferedReader.read();
                 char outputChar = encrypt(inputChar, key);
@@ -41,19 +43,13 @@ public class Cipher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        finally {
-            bufferedReader.close();
-            bufferedWriter.flush();
-            bufferedWriter.close();
-        }
     }
 
-    public void decryptFile(String key, String src, String dst){
-        FileManager fm = new FileManager();
-        try(BufferedReader bufferedReader = fm.readFileToBuffer(src);
-            BufferedWriter bufferedWriter = fm.writeBufferToFile(dst);)
-        {
-            while (bufferedReader.ready()){
+    public void decryptFile(String newKey, String src, String dst) {
+        setKey(newKey);
+        try (BufferedReader bufferedReader = fm.readFileToBuffer(src);
+             BufferedWriter bufferedWriter = fm.writeBufferToFile(dst);) {
+            while (bufferedReader.ready()) {
                 char input = (char) bufferedReader.read();
                 char output = decrypt(input, key);
                 bufferedWriter.write(output);
@@ -61,14 +57,10 @@ public class Cipher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-//        bufferedWriter.flush();
-//        bufferedWriter.close();
-//        bufferedReader.close();
     }
 
-    public Character decrypt(Character symbol, String key){
-        setShift(key);
+    public Character decrypt(Character symbol, String newKey) {
+        setKey(newKey);
         if (alphabet.containsChar(symbol)) {
             int index = (alphabet.getIndexOfChar(symbol) + Alphabet.length - shift) % Alphabet.length;
             return alphabet.getCharOfIndex(index);
@@ -77,7 +69,8 @@ public class Cipher {
         }
     }
 
-    public String decrypt(String message, String key) {
+    public String decrypt(String message, String newKey) {
+        setKey(newKey);
         char[] resultChar = new char[message.length()];     //результирующий массив
         char[] arrayMessage = message.toCharArray();        //массив символов из сообщения
 
@@ -87,7 +80,19 @@ public class Cipher {
         return String.copyValueOf(resultChar);
     }
 
-    private void setShift(String key){
-        this.shift = key.hashCode() % Alphabet.length;
+    private void setKey(String newKey) {
+//        System.out.println("*****Шифрование словом " + newKey);
+        setShift(newKey);
+        key = newKey;
+    }
+
+    private void setShift(String newKey) {
+        if (key == null) {
+            this.shift = newKey.hashCode() % Alphabet.length;
+//            System.out.println("***** Шифрование к ключем " + shift);
+        } else if (shift == Integer.MIN_VALUE || key.hashCode() == newKey.hashCode()) {
+            this.shift = newKey.hashCode() % Alphabet.length;
+//            System.out.println("***** Шифрование к ключем " + shift);
+        }
     }
 }

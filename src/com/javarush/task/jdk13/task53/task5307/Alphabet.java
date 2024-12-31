@@ -1,8 +1,10 @@
 package com.javarush.task.jdk13.task53.task5307;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
-public class Alphabet{
+public class Alphabet {
     private static ArrayList<Character> alphabet = new ArrayList<>();
     private static Map<Character, Integer> alphabetMap = new TreeMap<>();
     private static Alphabet INSTANCE = new Alphabet();
@@ -19,8 +21,15 @@ public class Alphabet{
     }
 
     private void addSpecialCharacters() {
-        alphabet.addAll(new ArrayList<>(Arrays.asList('.', ',', '-', ':', ';', '!')));
-//        alphabet.addAll(new ArrayList<>(Arrays.asList('.', ',', '«', '»', '"', '\'', '!', ':', '?')));
+//        alphabet.addAll(new ArrayList<>(Arrays.asList('.', ',', '-', ':', ';', '!')));
+        for (char ch = '!'; ch <= '/'; ch++) {
+//            System.out.println(ch + " (" + ((int) ch) + ")");
+            alphabet.add(ch);
+        }
+        for (char ch = ':'; ch <= '@'; ch++) {
+//            System.out.println(ch + " (" + ((int) ch) + ")");
+            alphabet.add(ch);
+        }
     }
 
     private void addRussianABC() {
@@ -60,7 +69,7 @@ public class Alphabet{
         return alphabetMap.containsKey(charOfMessage);
     }
 
-    public static void printAlphabet(){
+    public static void printAlphabet() {
         System.out.println("Alphabet ArrayList: " + alphabet.toString());
         System.out.println("Alphabet TreeMap: " + alphabetMap.keySet().toString());
     }

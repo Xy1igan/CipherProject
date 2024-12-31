@@ -1,6 +1,9 @@
 package com.javarush.task.jdk13.task53.task5307;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -8,44 +11,50 @@ public class FileManager {
     private final String FILE_NOT_FOUND = "Файл %s не сущействует \n";
     private final String FILE_EXIST = "Файл %s найден \n";
     private final String FILE_READING = "Чтение из файла %s \n";
-
+    private final String TRY_TO_CREATE_FILE = "Попытка создания файла %s \n";
+    private final String CHECK_EXIST_FILE = "Запущена проверка наличия файла %s \n";
+    private final String FILE_IS_CREATED = "Файл s% создан \n";
 
 
     public BufferedReader readFileToBuffer(String src) throws IOException {
         if (isFile(src) && isExistFile(src)) {
             System.out.printf(FILE_READING, src);
             return Files.newBufferedReader(Path.of(src));
-        } else throw new IOException(FILE_NOT_FOUND);
+        } else {
+            System.out.printf(FILE_NOT_FOUND, src);
+            throw new IOException();
+        }
     }
 
-    public BufferedWriter writeBufferToFile(String dst) throws IOException {
+    public BufferedWriter writeBufferToFile(String dst) {
         Path path = Path.of(dst);
         if (isFile(dst)) {
             if (!isExistFile(dst)) {
-                System.out.println("Попытка создания файла " + dst);
+                System.out.printf(TRY_TO_CREATE_FILE, dst);
                 createFile(path);
             }
             return newBufferedWriter(path);
-        } return newBufferedWriter(path);
+        }
+        return newBufferedWriter(path);
     }
 
-    private BufferedWriter newBufferedWriter(Path path){
+    private BufferedWriter newBufferedWriter(Path path) {
         try {
             return Files.newBufferedWriter(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-//    public ArrayList<Character> readAllCharacters(String src) throws IOException {
-//        ArrayList<Character> arrayListCharacter = new ArrayList<>();
-//        char[] resultCharArray = new char[]
-//        Collections.addAll(arrayListCharacter, Files.readAllBytes(Path.of(src)));
-//        return arrayListCharacter.addAll();
-//    }
+
+    public char[] readAllCharacters(String src) throws IOException {
+        String newString = new String(Files.readAllBytes(Path.of(src)));
+        char[] result = newString.toCharArray();
+        return result;
+    }
 
     private boolean isExistFile(String fileDirection) {
         File file = new File(fileDirection);
-        System.out.printf("Запущена проверка наличия файла %s \n", fileDirection);
+        System.out.printf(CHECK_EXIST_FILE, fileDirection);
         if (!file.exists()) {
             System.out.printf(FILE_NOT_FOUND, file);
             return false;
@@ -57,15 +66,14 @@ public class FileManager {
 
     private boolean isFile(String fileDirection) {
         File file = new File(fileDirection);
-        System.out.printf("Проверка на файл %s пройдена \n", fileDirection);
 
         return !file.isDirectory();
     }
 
-    private void createFile(Path path){
+    private void createFile(Path path) {
         try {
             Files.createFile(path);
-            System.out.printf("Файл s% создан \n", path);
+            System.out.printf(FILE_IS_CREATED, path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
