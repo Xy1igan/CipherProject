@@ -1,11 +1,9 @@
 package com.javarush.task.jdk13.task53.task5307;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.TreeSet;
 
 public class FileManager {
     private final String FILE_NOT_FOUND = "Файл %s не сущействует \n";
@@ -38,18 +36,19 @@ public class FileManager {
         return newBufferedWriter(path);
     }
 
+    public char[] readAllCharacters(String src) throws IOException {
+        String newString = new String(Files.readAllBytes(Path.of(src)));
+        char[] result = newString.toCharArray();
+        return result;
+    }
+
+
     private BufferedWriter newBufferedWriter(Path path) {
         try {
             return Files.newBufferedWriter(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public char[] readAllCharacters(String src) throws IOException {
-        String newString = new String(Files.readAllBytes(Path.of(src)));
-        char[] result = newString.toCharArray();
-        return result;
     }
 
     private boolean isExistFile(String fileDirection) {
@@ -78,4 +77,6 @@ public class FileManager {
             throw new RuntimeException(e);
         }
     }
+
+
 }
