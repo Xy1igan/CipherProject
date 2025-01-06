@@ -19,25 +19,21 @@ public class Alphabet {
         }
     }
 
-    public boolean isLetter(Character charForCheck){
+    public boolean isLetter(Character charForCheck) {
         return letters.contains(charForCheck);
     }
 
     private void addSpecialCharacters() {
-//        alphabet.addAll(new ArrayList<>(Arrays.asList('.', ',', '-', ':', ';', '!')));
-        for (char ch = '!'; ch <= '/'; ch++) {
-//            System.out.println(ch + " (" + ((int) ch) + ")");
+        for (char ch = ' '; ch <= '/'; ch++) {
             alphabet.add(ch);
         }
         for (char ch = ':'; ch <= '@'; ch++) {
-//            System.out.println(ch + " (" + ((int) ch) + ")");
             alphabet.add(ch);
         }
     }
 
     private void addRussianABC() {
         for (char ch = 'А'; ch <= 'я'; ch++) {
-//            System.out.println(ch + " (" + ((int) ch) + ")");
             alphabet.add(ch);
             letters.add(ch);
         }
@@ -45,12 +41,10 @@ public class Alphabet {
 
     private void addEnglishABC() {
         for (char ch = 'A'; ch <= 'Z'; ch++) {
-//            System.out.println(ch + " (" + ((int) ch) + ")");
             alphabet.add(ch);
             letters.add(ch);
         }
         for (char ch = 'a'; ch <= 'z'; ch++) {
-//            System.out.println(ch + " (" + ((int) ch) + ")");
             alphabet.add(ch);
             letters.add(ch);
         }
